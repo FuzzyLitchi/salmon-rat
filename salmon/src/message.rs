@@ -1,27 +1,28 @@
 #[derive(Debug)]
 pub enum Message {
     Shutdown,
-    Print,
+    Print(String),
 }
 
 impl Message {
     pub fn from_u8(byte: u8) -> Result<Message, MessageError> {
         match byte {
             0 => Ok(Message::Shutdown),
-            1 => Ok(Message::Print),
-            _ => Err(MessageError::OutOffEnum),
+            1 => Err(MessageError::MissingArg),
+            _ => Err(MessageError::NoSuchMessage),
         }
     }
 
     pub fn to_u8(&self) -> u8 {
         match *self {
             Message::Shutdown => 0,
-            Message::Print => 1,
+            Message::Print(_) => 1,
         }
     }
 }
 
+#[derive(Debug)]
 pub enum MessageError {
-    OutOffEnum,
+    NoSuchMessage,
     MissingArg,
 }

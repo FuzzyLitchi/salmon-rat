@@ -25,7 +25,7 @@ impl Iterator for MessageStream {
         let mut byte = [0; 1];
         match self.stream.read(&mut byte) {
             Ok(0) => None,
-            Ok(_) => Message::from_u8(byte[0]).ok(),
+            Ok(_) => Some(Message::from_u8(byte[0]).unwrap()),
             Err(_) => None,
         }
     }
