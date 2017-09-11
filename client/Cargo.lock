@@ -1,0 +1,11 @@
+[root]
+name = "client"
+version = "0.1.0"
+dependencies = [
+ "salmon 0.1.0",
+]
+
+[[package]]
+name = "salmon"
+version = "0.1.0"
+
