@@ -1,4 +1,4 @@
-use message::Message;
+use message::{Message, MessageError};
 use std::io;
 use std::io::prelude::*;
 use std::net::TcpStream;
@@ -25,7 +25,12 @@ impl Iterator for MessageStream {
         let mut byte = [0; 1];
         match self.stream.read(&mut byte) {
             Ok(0) => None,
-            Ok(_) => Some(Message::from_u8(byte[0]).unwrap()),
+            Ok(_) =>
+            match Message::from_u8(byte[0]) {
+                Ok(value) => Some(value),
+                Err(MessageError::MissingArg) => unimplemented!(),
+                Err(MessageError::NoSuchMessage) => panic!("Byte value has no message representation!"),
+            },
             Err(_) => None,
         }
     }

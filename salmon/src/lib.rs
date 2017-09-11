@@ -1,3 +1,5 @@
+#![feature(try_from)]
+
 mod stream;
 mod message;
 
