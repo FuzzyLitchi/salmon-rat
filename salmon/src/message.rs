@@ -1,39 +1,37 @@
 use std::convert::TryInto;
 
-#[derive(Debug)]
-pub enum Message {
-    Shutdown,
-    Print(String),
+pub trait Message {
+    const ID: u8;
+
+    fn into_bytes(self) -> Vec<u8>;
 }
 
-impl Message {
-    pub fn from_u8(byte: u8) -> Result<Message, MessageError> {
-        match byte {
-            0 => Ok(Message::Shutdown),
-            1 => Err(MessageError::MissingArg),
-            _ => Err(MessageError::NoSuchMessage),
-        }
+#[derive(Debug)]
+pub struct Shutdown;
+
+impl Message for Shutdown {
+    const ID: u8 = 0;
+
+    fn into_bytes(self) -> Vec<u8> {
+        vec![0]
     }
+}
 
-    pub fn to_u8(&self) -> u8 {
-        match *self {
-            Message::Shutdown => 0,
-            Message::Print(_) => 1,
-        }
-    }
+#[derive(Debug)]
+pub struct Print {
+    string: String,
+}
 
-    pub fn into_bytes(self) -> Vec<u8> {
-        match self {
-            Message::Shutdown => vec![0],
-            Message::Print(s) => {
-                let length = s.len().try_into().expect("String to long, maximum 256 chars");
-                let mut bytes = s.into_bytes();
+impl Message for Print {
+    const ID: u8 = 1;
 
-                bytes.insert(0, 1);
-                bytes.insert(1, length);
-                bytes
-            },
-        }
+    fn into_bytes(self) -> Vec<u8> {
+        let length = self.string.len().try_into().expect("String to long, maximum 256 chars");
+        let mut bytes = self.string.into_bytes();
+
+        bytes.insert(0, 1);
+        bytes.insert(1, length);
+        bytes
     }
 }
 

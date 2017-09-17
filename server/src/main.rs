@@ -11,5 +11,5 @@ fn main() {
 
     let mut server = MessageStream::new(listener.accept().unwrap().0);
 
-    server.send(Message::Print).expect("Failed to send message");
+    server.send(Message::Print("Heyo".to_string())).expect("Failed to send");
 }

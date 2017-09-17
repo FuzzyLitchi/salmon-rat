@@ -14,12 +14,14 @@ impl MessageStream {
         }
     }
 
-    pub fn send(&mut self, message: Message) -> Result<usize, io::Error> {
-        self.stream.write(&[message.to_u8()])
+    pub fn send<T>(&mut self, message: T) -> Result<usize, io::Error>
+        where T: Message
+    {
+        self.stream.write(&message.into_bytes())
     }
 }
 
-impl Iterator for MessageStream {
+/*impl Iterator for MessageStream {
     type Item = Message;
     fn next(&mut self) -> Option<Self::Item> {
         let mut byte = [0; 1];
@@ -35,3 +37,4 @@ impl Iterator for MessageStream {
         }
     }
 }
+*/
